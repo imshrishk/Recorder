@@ -1,10 +1,10 @@
 // src/pages/record.jsx
 import React, { useState } from 'react';
-import Layout from '../components/Layout/Layout';
-import ScreenRecorder from '../components/Recorder/ScreenRecorder';
-import VideoRecorder from '../components/Recorder/VideoRecorder';
-import CombinedRecorder from '../components/Recorder/CombinedRecorder'; // No .jsx needed
-import Button from '../components/UI/Button';
+import Layout from '../src/components/Layout/Layout';
+import ScreenRecorder from '../src/components/Recorder/ScreenRecorder';
+import VideoRecorder from '../src/components/Recorder/VideoRecorder';
+import CombinedRecorder from '../src/components/Recorder/CombinedRecorder'; // No .jsx needed
+import Button from '../src/components/UI/Button';
 import styles from '../styles/Record.module.css';
 import { FaDesktop, FaVideo, FaCamera } from 'react-icons/fa';
 

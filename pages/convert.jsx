@@ -1,8 +1,8 @@
 // src/pages/convert.jsx
 import React, { useState } from 'react';
-import Layout from '../components/Layout/Layout';
-import WebMToMP4Converter from '../components/WebMToMP4Converter';
-import Button from '../components/UI/Button';
+import Layout from '../src/components/Layout/Layout';
+import WebMToMP4Converter from '../src/components/WebMToMP4Converter';
+import Button from '../src/components/UI/Button';
 import styles from '../styles/Convert.module.css';
 import { FaFileVideo, FaArrowCircleLeft } from 'react-icons/fa';
 

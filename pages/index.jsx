@@ -1,8 +1,8 @@
 // src/pages/index.jsx
 import React from 'react';
 import Link from 'next/link';
-import Layout from '../components/Layout/Layout';
-import Button from '../components/UI/Button';
+import Layout from '../src/components/Layout/Layout';
+import Button from '../src/components/UI/Button';
 import styles from '../styles/Home.module.css';
 
 const Home = () => {
