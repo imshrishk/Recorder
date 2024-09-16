@@ -1,8 +1,7 @@
-// src/components/WebMToMP4Converter.jsx
-
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './WebMToMP4Converter.module.css'; // Import the CSS module
+import DownloadButton from './UI/DownloadButton'; // Import the DownloadButton component
+import styles from './WebMToMP4Converter.module.css';
 
 const WebMToMP4Converter = () => {
   const [loading, setLoading] = useState(false);
@@ -42,14 +41,12 @@ const WebMToMP4Converter = () => {
           accept="video/webm"
           onChange={handleFileChange}
         />
-        {loading && <p>Converting...Go grab a coffee🍵😊</p>}
+        {loading && <p>Converting... Go grab a coffee🍵😊</p>}
         {error && <p className={styles.errorMessage}>{error}</p>}
         {videoUrl && (
           <div>
             <video controls className={styles.video} src={videoUrl} />
-            <a href={videoUrl} download="converted.mp4" className={styles.downloadLink}>
-              <button className={styles.uploadButton}>Download MP4</button>
-            </a>
+            <DownloadButton url={videoUrl} filename="converted.mp4" />
           </div>
         )}
       </form>

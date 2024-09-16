@@ -5,6 +5,11 @@ import styles from './DownloadButton.module.css';
 import { FaDownload } from 'react-icons/fa';
 
 const DownloadButton = ({ url, filename }) => {
+  // Add a check to ensure the URL is valid
+  if (!url) {
+    return <p>Download URL is not available.</p>;
+  }
+
   return (
     <a href={url} download={filename} className={styles.downloadButton}>
       <FaDownload className={styles.icon} /> Download Recording
