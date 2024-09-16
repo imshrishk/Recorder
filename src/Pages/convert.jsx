@@ -30,7 +30,7 @@ const ConvertPage = () => {
               label="Back"
               onClick={() => setShowConverter(false)}
               color="red"
-              className={styles.backButton} /* Apply the backButton class */
+              className={styles.backButton}
             >
               <FaArrowCircleLeft />
             </Button>
