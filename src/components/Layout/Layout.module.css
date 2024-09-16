@@ -1,0 +1,43 @@
+/* src/components/Layout/Layout.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header {
+    background-color: #0070f3;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navLink {
+    margin-left: 20px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navLink:hover {
+    text-decoration: underline;
+  }
+  
+  .navLink svg {
+    margin-right: 5px;
+  }
+  
+  .main {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 10px;
+  }

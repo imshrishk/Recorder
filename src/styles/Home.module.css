@@ -1,0 +1,16 @@
+/* src/styles/Home.module.css */
+
+.homeContainer {
+    text-align: center;
+    padding: 50px 20px;
+  }
+  
+  .homeContainer h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .homeContainer p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }

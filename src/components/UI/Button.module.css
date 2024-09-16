@@ -1,0 +1,40 @@
+/* src/components/UI/Button.module.css */
+
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .blue {
+    background-color: #0070f3;
+    color: white;
+  }
+  
+  .blue:hover {
+    background-color: #005bb5;
+  }
+  
+  .red {
+    background-color: #e53e3e;
+    color: white;
+  }
+  
+  .red:hover {
+    background-color: #c53030;
+  }
+  
+  .indicator {
+    color: red;
+    margin-right: 8px;
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }

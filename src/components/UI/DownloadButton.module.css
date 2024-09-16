@@ -1,0 +1,23 @@
+/* src/components/UI/DownloadButton.module.css */
+
+.downloadButton {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .downloadButton:hover {
+    background-color: #45a049;
+  }
+  
+  .icon {
+    margin-right: 8px;
+  }
