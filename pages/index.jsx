@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import Layout from '../src/components/Layout/Layout';
 import Button from '../src/components/UI/Button';
-import styles from '../styles/Home.module.css';
+import styles from '../src/styles/Home.module.css';
 
 const Home = () => {
   return (

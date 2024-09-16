@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Layout from '../src/components/Layout/Layout';
 import WebMToMP4Converter from '../src/components/WebMToMP4Converter';
 import Button from '../src/components/UI/Button';
-import styles from '../styles/Convert.module.css';
+import styles from '../src/styles/Convert.module.css';
 import { FaFileVideo, FaArrowCircleLeft } from 'react-icons/fa';
 
 const ConvertPage = () => {
