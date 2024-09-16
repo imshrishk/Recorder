@@ -1,17 +1,9 @@
 // src/hooks/useRecorder.js
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { generateUniqueFilename, handleError } from '../utils/helpers';
 
-/**
- * useRecorder Hook
- *
- * Manages media recording functionality for screen, video, or combined recording.
- *
- * @param {string} mode - The recording mode: 'screen', 'video', or 'combined'.
- * @returns {object} - Contains recording state, video URL, filename, and control functions.
- */
 const useRecorder = (mode = 'screen') => {
   const [recording, setRecording] = useState(false);
   const [videoURL, setVideoURL] = useState(null);
@@ -20,47 +12,45 @@ const useRecorder = (mode = 'screen') => {
   const chunksRef = useRef([]);
   const streamsRef = useRef([]);
 
-  /**
-   * Starts the recording based on the selected mode.
-   */
-  const startRecording = async () => {
+  const startRecording = useCallback(async () => {
     try {
       let stream;
 
-      if (mode === 'screen') {
-        stream = await navigator.mediaDevices.getDisplayMedia({
-          video: { mediaSource: 'screen' },
-          audio: true,
-        });
-      } else if (mode === 'video') {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-      } else if (mode === 'combined') {
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: { mediaSource: 'screen' },
-          audio: true,
-        });
-        const webcamStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-
-        // Combine streams
-        stream = new MediaStream([
-          ...screenStream.getVideoTracks(),
-          ...webcamStream.getVideoTracks(),
-          ...screenStream.getAudioTracks(),
-          ...webcamStream.getAudioTracks(),
-        ]);
-
-        // Keep references to stop tracks later
-        streamsRef.current = [screenStream, webcamStream];
+      switch (mode) {
+        case 'screen':
+          stream = await navigator.mediaDevices.getDisplayMedia({
+            video: { mediaSource: 'screen' },
+            audio: true,
+          });
+          break;
+        case 'video':
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          break;
+        case 'combined':
+          const screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { mediaSource: 'screen' },
+            audio: true,
+          });
+          const webcamStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          stream = new MediaStream([
+            ...screenStream.getVideoTracks(),
+            ...webcamStream.getVideoTracks(),
+            ...screenStream.getAudioTracks(),
+            ...webcamStream.getAudioTracks(),
+          ]);
+          streamsRef.current = [screenStream, webcamStream];
+          break;
+        default:
+          throw new Error('Invalid recording mode');
       }
 
-      // Initialize MediaRecorder
-      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
           chunksRef.current.push(event.data);
@@ -72,22 +62,16 @@ const useRecorder = (mode = 'screen') => {
     } catch (err) {
       handleError(err);
     }
-  };
+  }, [mode]);
 
-  /**
-   * Stops the ongoing recording.
-   */
-  const stopRecording = () => {
-    if (mediaRecorderRef.current) {
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && recording) {
       mediaRecorderRef.current.stop();
       setRecording(false);
     }
-  };
+  }, [recording]);
 
-  /**
-   * Handles the stop event of the MediaRecorder.
-   */
-  const handleStop = () => {
+  const handleStop = useCallback(() => {
     const blob = new Blob(chunksRef.current, { type: 'video/webm' });
     chunksRef.current = [];
     const url = URL.createObjectURL(blob);
@@ -95,41 +79,28 @@ const useRecorder = (mode = 'screen') => {
     setFilename(uniqueFilename);
     setVideoURL(url);
     uploadVideo(blob, uniqueFilename);
-  };
+  }, [mode]);
 
-  /**
-   * Uploads the recorded video to the server.
-   *
-   * @param {Blob} blob - The recorded video blob.
-   * @param {string} uniqueFilename - The filename for the recording.
-   */
-  const uploadVideo = async (blob, uniqueFilename) => {
+  const uploadVideo = useCallback(async (blob, uniqueFilename) => {
     const formData = new FormData();
     formData.append('file', blob, uniqueFilename);
 
     try {
       const response = await axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload successful:', response.data);
     } catch (error) {
       handleError(error);
     }
-  };
+  }, []);
 
-  /**
-   * Stops all active media streams.
-   */
-  const stopStreams = () => {
-    if (streamsRef.current.length > 0) {
-      streamsRef.current.forEach((stream) => {
-        stream.getTracks().forEach((track) => track.stop());
-      });
-      streamsRef.current = [];
-    }
-  };
+  const stopStreams = useCallback(() => {
+    streamsRef.current.forEach((stream) => {
+      stream.getTracks().forEach((track) => track.stop());
+    });
+    streamsRef.current = [];
+  }, []);
 
   return {
     recording,
@@ -137,7 +108,7 @@ const useRecorder = (mode = 'screen') => {
     filename,
     startRecording,
     stopRecording,
-    stopStreams, // Exposed for clean-up if needed
+    stopStreams,
   };
 };
 

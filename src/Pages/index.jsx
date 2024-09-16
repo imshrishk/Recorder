@@ -13,9 +13,14 @@ const Home = () => {
         <p>
           Easily record your screen activities, webcam video, or both simultaneously. Share your recordings effortlessly!
         </p>
-        <Link href="/record">
-          <Button label="Get Started" />
-        </Link>
+        <div className={styles.buttonGroup}>
+          <Link href="/record">
+            <Button label="Record Stuff" />
+          </Link>
+          <Link href="/convert">
+            <Button label="Convert Stuff" />
+          </Link>
+        </div>
       </div>
     </Layout>
   );

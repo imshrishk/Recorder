@@ -14,3 +14,16 @@
     font-size: 1.2rem;
     margin-bottom: 30px;
   }
+
+  .buttonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .buttonGroup a {
+    text-decoration: none;
+  }

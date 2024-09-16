@@ -39,17 +39,22 @@ const CombinedRecorder = () => {
       const screenVideo = document.createElement('video');
       screenVideo.srcObject = screenStream;
       screenVideoRef.current = screenVideo;
-      await waitForVideoReady(screenVideo);
-      screenVideo.play();
 
-      webcamVideoRef.current.srcObject = webcamStream;
-      await waitForVideoReady(webcamVideoRef.current);
-      webcamVideoRef.current.play();
+      const webcamVideo = webcamVideoRef.current;
+      webcamVideo.srcObject = webcamStream;
+
+      // Ensure the videos are ready before starting recording
+      await Promise.all([
+        new Promise((resolve) => screenVideo.onloadedmetadata = resolve),
+        new Promise((resolve) => webcamVideo.onloadedmetadata = resolve),
+      ]);
+
+      screenVideo.play();
+      webcamVideo.play();
 
       drawCanvas();
 
       const canvasStream = canvasRef.current.captureStream(30);
-
       const combinedAudioTracks = [
         ...screenStream.getAudioTracks(),
         ...webcamStream.getAudioTracks(),
@@ -69,7 +74,6 @@ const CombinedRecorder = () => {
       };
 
       mediaRecorderRef.current.onstop = handleStop;
-
       mediaRecorderRef.current.start();
       setRecording(true);
     } catch (err) {
@@ -104,9 +108,7 @@ const CombinedRecorder = () => {
 
     try {
       const response = await axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload successful:', response.data);
       alert('Recording uploaded successfully!');
@@ -122,20 +124,12 @@ const CombinedRecorder = () => {
       animationFrameIdRef.current = null;
     }
 
-    if (screenStreamRef.current) {
-      screenStreamRef.current.getTracks().forEach((track) => track.stop());
-      screenStreamRef.current = null;
-    }
-
-    if (webcamStreamRef.current) {
-      webcamStreamRef.current.getTracks().forEach((track) => track.stop());
-      webcamStreamRef.current = null;
-    }
+    screenStreamRef.current?.getTracks().forEach((track) => track.stop());
+    webcamStreamRef.current?.getTracks().forEach((track) => track.stop());
 
     if (screenVideoRef.current) {
       screenVideoRef.current.srcObject = null;
       screenVideoRef.current.remove();
-      screenVideoRef.current = null;
     }
 
     if (webcamVideoRef.current) {
@@ -158,40 +152,26 @@ const CombinedRecorder = () => {
     const draw = () => {
       if (!recording) return;
 
-      if (screenVideo.readyState !== 4 || webcamVideo.readyState !== 4) {
+      if (screenVideo.readyState < 2 || webcamVideo.readyState < 2) {
         animationFrameIdRef.current = requestAnimationFrame(draw);
         return;
       }
 
-      // Set canvas dimensions to match the screen video
       canvas.width = screenVideo.videoWidth;
       canvas.height = screenVideo.videoHeight;
 
-      // Draw the screen video
       ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
 
-      // Define the size and position of the webcam video overlay
       const webcamWidth = canvas.width * 0.25;
       const webcamHeight = (webcamVideo.videoHeight / webcamVideo.videoWidth) * webcamWidth;
       const margin = 20;
 
-      // Draw the webcam video in the top-right corner
       ctx.drawImage(webcamVideo, canvas.width - webcamWidth - margin, margin, webcamWidth, webcamHeight);
 
-      // Queue the next frame
       animationFrameIdRef.current = requestAnimationFrame(draw);
     };
 
-    // Start the drawing loop
     animationFrameIdRef.current = requestAnimationFrame(draw);
-  };
-
-  const waitForVideoReady = (videoElement) => {
-    return new Promise((resolve) => {
-      videoElement.onloadedmetadata = () => {
-        resolve();
-      };
-    });
   };
 
   useEffect(() => {
@@ -206,12 +186,12 @@ const CombinedRecorder = () => {
       {!recording ? (
         <Button onClick={startRecording} label="Start Combined Recording" />
       ) : (
-        <Button onClick={stopRecording} label="Stop Recording" color="red" recording={recording} />
+        <Button onClick={stopRecording} label="Stop Recording" color="red" />
       )}
       {videoURL && (
         <>
           <VideoPlayer src={videoURL} title="Combined Recording" />
-          <DownloadButton webmUrl={URL.createObjectURL(videoBlob)} filename={filename} />
+          <DownloadButton webmUrl={videoURL} filename={filename} />
         </>
       )}
       <video ref={webcamVideoRef} style={{ display: 'none' }} />
