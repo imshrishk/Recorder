@@ -4,6 +4,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative; /* Add relative positioning to the container */
 }
 
 .header {
@@ -11,6 +12,7 @@
   color: #fff;
   padding: 1rem 0;
   text-align: center;
+  position: relative; /* Ensure the header can contain absolutely positioned elements */
 }
 
 .title {
@@ -31,4 +33,16 @@
   color: #6c757d;
   text-align: center;
   padding: 1rem 0;
+}
+
+.githubLink {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.githubLink:hover {
+  color: #e0e0e0;
 }

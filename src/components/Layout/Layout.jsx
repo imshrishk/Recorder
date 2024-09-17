@@ -1,7 +1,6 @@
-// src/components/Layout/Layout.jsx
 import React from 'react';
 import Link from 'next/link';
-import { FaHome, FaVideo, FaDesktop, FaFileVideo } from 'react-icons/fa';
+import { FaHome, FaVideo, FaFileVideo, FaGithub } from 'react-icons/fa';
 import styles from './Layout.module.css';
 
 const Layout = ({ children }) => {
@@ -20,6 +19,9 @@ const Layout = ({ children }) => {
             <FaFileVideo /> Convert
           </Link>
         </nav>
+        <a href="https://github.com/imshrishk" target="_blank" rel="noopener noreferrer" className={styles.githubLink}>
+          <FaGithub size={24} />
+        </a>
       </header>
       <main className={styles.main}>{children}</main>
       <footer className={styles.footer}>
